@@ -1,0 +1,496 @@
+{
+  "class": "qc.Node",
+  "data": {
+    "_prefab": [
+      7,
+      "Temp/scene_editor.bin"
+    ],
+    "__lock": [
+      5,
+      null
+    ],
+    "name": [
+      7,
+      "world"
+    ],
+    "uniqueName": [
+      7,
+      ""
+    ],
+    "ignoreDestroy": [
+      5,
+      false
+    ],
+    "alpha": [
+      3,
+      1
+    ],
+    "visible": [
+      5,
+      true
+    ],
+    "colorTint": [
+      14,
+      4294967295
+    ],
+    "static": [
+      5,
+      false
+    ],
+    "scripts": [],
+    "position": [
+      0,
+      0,
+      613.1176017964176,
+      45.507497088030846,
+      613.1176017964176,
+      45.507497088030846,
+      750,
+      1334,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scaleX": [
+      3,
+      0.3314467938872554
+    ],
+    "scaleY": [
+      3,
+      0.3314467938872554
+    ],
+    "rotation": [
+      3,
+      0
+    ],
+    "interactive": [
+      5,
+      false
+    ],
+    "isFiltersThrough": [
+      5,
+      null
+    ],
+    "children": [
+      {
+        "class": "qc.UIRoot",
+        "data": {
+          "uuid": "bc960242-75cf-4807-a860-5e1a2e32f350",
+          "_prefab": [
+            7,
+            ""
+          ],
+          "__lock": [
+            5,
+            null
+          ],
+          "name": [
+            7,
+            "UIRoot"
+          ],
+          "uniqueName": [
+            7,
+            ""
+          ],
+          "ignoreDestroy": [
+            5,
+            false
+          ],
+          "alpha": [
+            3,
+            1
+          ],
+          "visible": [
+            5,
+            true
+          ],
+          "colorTint": [
+            14,
+            16777215
+          ],
+          "static": [
+            5,
+            false
+          ],
+          "scripts": [
+            {
+              "clazz": "qc.ScaleAdapter",
+              "data": "a5c040dc-6f28-4ea8-a763-1dacdfab6d26"
+            },
+            {
+              "clazz": "ps.MainConfig",
+              "data": "0a6c60fd-c6d4-417a-b626-7311cadc417b"
+            },
+            {
+              "clazz": "MainBeh",
+              "data": "529b801e-a90f-46c3-997f-a635a3dae0b1"
+            },
+            {
+              "clazz": "ps.DebugConfig",
+              "data": "63b9567c-5075-4aed-928d-d70ffc48ee3f"
+            }
+          ],
+          "position": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            750,
+            1334,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "scaleX": [
+            3,
+            1
+          ],
+          "scaleY": [
+            3,
+            1
+          ],
+          "rotation": [
+            3,
+            0
+          ],
+          "interactive": [
+            5,
+            false
+          ],
+          "isFiltersThrough": [
+            5,
+            null
+          ],
+          "children": [
+            {
+              "class": "qc.Node",
+              "data": {
+                "uuid": "59995883-59f0-4af6-94fe-44e2ebca9d09",
+                "_prefab": [
+                  7,
+                  ""
+                ],
+                "__lock": [
+                  5,
+                  null
+                ],
+                "name": [
+                  7,
+                  "gamePlay"
+                ],
+                "uniqueName": [
+                  7,
+                  ""
+                ],
+                "ignoreDestroy": [
+                  5,
+                  false
+                ],
+                "alpha": [
+                  3,
+                  1
+                ],
+                "visible": [
+                  5,
+                  true
+                ],
+                "colorTint": [
+                  14,
+                  16777215
+                ],
+                "static": [
+                  5,
+                  false
+                ],
+                "scripts": [],
+                "position": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  750,
+                  1334,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  1
+                ],
+                "scaleX": [
+                  3,
+                  1
+                ],
+                "scaleY": [
+                  3,
+                  1
+                ],
+                "rotation": [
+                  3,
+                  0
+                ],
+                "interactive": [
+                  5,
+                  false
+                ],
+                "isFiltersThrough": [
+                  5,
+                  null
+                ],
+                "children": []
+              }
+            }
+          ]
+        },
+        "__json": {
+          "a5c040dc-6f28-4ea8-a763-1dacdfab6d26": {
+            "class": "qc.ScaleAdapter",
+            "data": {
+              "uuid": [
+                7,
+                "a5c040dc-6f28-4ea8-a763-1dacdfab6d26"
+              ],
+              "enable": true,
+              "target": null,
+              "referenceResolution": [
+                24,
+                "qc.Point",
+                [
+                  1334,
+                  1334
+                ]
+              ],
+              "manualType": [
+                3,
+                4
+              ],
+              "fullTarget": [
+                5,
+                true
+              ],
+              "gameObjectRecord": [
+                4,
+                [
+                  1.464767616191904,
+                  1.464767616191904,
+                  1334,
+                  546.1617195496417
+                ]
+              ]
+            }
+          },
+          "47f5200c-292f-459a-9abf-43e5b2a7c603": {
+            "class": "qc.demo.Test",
+            "data": {
+              "uuid": [
+                7,
+                "47f5200c-292f-459a-9abf-43e5b2a7c603"
+              ],
+              "enable": true,
+              "version": [
+                3,
+                "0.1.0"
+              ]
+            }
+          },
+          "5f7e72a3-af10-402c-bf02-303b17784abc": {
+            "class": "qc.demo.MainBehaviour",
+            "data": {
+              "uuid": [
+                7,
+                "5f7e72a3-af10-402c-bf02-303b17784abc"
+              ],
+              "enable": true,
+              "version": [
+                7,
+                "0.1.1"
+              ]
+            }
+          },
+          "e2c562c7-bdff-43c4-a3cb-8b8f0cae2791": {
+            "class": "vamp.MainBehaviour",
+            "data": {
+              "uuid": [
+                7,
+                "e2c562c7-bdff-43c4-a3cb-8b8f0cae2791"
+              ],
+              "enable": true,
+              "version": [
+                7,
+                "0.1.1"
+              ],
+              "bgm": [
+                7,
+                "bm_bgm"
+              ]
+            }
+          },
+          "55a3fbdc-8e96-4ca1-aa61-5ccb6ba8e146": {
+            "class": "ps.MainBehaviour",
+            "data": {
+              "uuid": [
+                7,
+                "55a3fbdc-8e96-4ca1-aa61-5ccb6ba8e146"
+              ],
+              "enable": true,
+              "version": [
+                7,
+                "0.1.1"
+              ],
+              "bgm": [
+                7,
+                "bm_bgm"
+              ]
+            }
+          },
+          "1f1d772a-77cf-4ee1-9ea5-c215e8981006": {
+            "class": "ps.Main",
+            "data": {
+              "uuid": [
+                7,
+                "1f1d772a-77cf-4ee1-9ea5-c215e8981006"
+              ],
+              "enable": true,
+              "version": [
+                7,
+                "0.1.1"
+              ],
+              "bgm": [
+                7,
+                "bm_bgm"
+              ]
+            }
+          },
+          "0a6c60fd-c6d4-417a-b626-7311cadc417b": {
+            "class": "ps.MainConfig",
+            "data": {
+              "uuid": [
+                7,
+                "0a6c60fd-c6d4-417a-b626-7311cadc417b"
+              ],
+              "enable": true,
+              "version": [
+                7,
+                "1"
+              ],
+              "autoGameStart": [
+                5,
+                false
+              ],
+              "showFps": [
+                5,
+                false
+              ],
+              "bgm": [
+                7,
+                "bm_bgm"
+              ],
+              "autoPlayBgm": [
+                5,
+                true
+              ],
+              "bgmName": [
+                7,
+                "bm_bgm"
+              ],
+              "endingPrefab": [
+                16,
+                "Yz5cah4HzzGK157"
+              ],
+              "beginningPrefab": [
+                16,
+                "csFxynNKAeWT940"
+              ],
+              "touchMaskPrefab": [
+                16,
+                "PGXJhnsa2G7n062"
+              ],
+              "useConfigJson": [
+                5,
+                true
+              ],
+              "dynamicLoadingBeginning": [
+                5,
+                false
+              ],
+              "isCreateBeginning": [
+                5,
+                false
+              ],
+              "isCreateStartPrefab": [
+                5,
+                true
+              ],
+              "startPrefab": [
+                16,
+                "F4a2JYCzpemD278"
+              ]
+            }
+          },
+          "529b801e-a90f-46c3-997f-a635a3dae0b1": {
+            "class": "MainBeh",
+            "data": {
+              "uuid": [
+                7,
+                "529b801e-a90f-46c3-997f-a635a3dae0b1"
+              ],
+              "enable": true
+            }
+          },
+          "63b9567c-5075-4aed-928d-d70ffc48ee3f": {
+            "class": "ps.DebugConfig",
+            "data": {
+              "uuid": [
+                7,
+                "63b9567c-5075-4aed-928d-d70ffc48ee3f"
+              ],
+              "enable": true,
+              "autoGameStart": [
+                5,
+                true
+              ],
+              "showFps": [
+                5,
+                false
+              ],
+              "useConfigJson": [
+                5,
+                false
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  "dependences": {
+    "F4a2JYCzpemD278": {
+      "key": "F4a2JYCzpemD278",
+      "uuid": "F4a2JYCzpemD278"
+    },
+    "Yz5cah4HzzGK157": {
+      "key": "Yz5cah4HzzGK157",
+      "uuid": "Yz5cah4HzzGK157"
+    },
+    "PGXJhnsa2G7n062": {
+      "key": "PGXJhnsa2G7n062",
+      "uuid": "PGXJhnsa2G7n062"
+    }
+  }
+}

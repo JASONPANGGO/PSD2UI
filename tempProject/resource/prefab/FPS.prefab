@@ -1,0 +1,255 @@
+{
+  "class": "qc.UIText",
+  "data": {
+    "uuid": "0a54a5be-6a7d-4e0c-8951-0c575134026e",
+    "_prefab": [
+      7,
+      ""
+    ],
+    "__lock": [
+      5,
+      null
+    ],
+    "name": [
+      7,
+      "FPS"
+    ],
+    "uniqueName": [
+      7,
+      ""
+    ],
+    "ignoreDestroy": [
+      5,
+      false
+    ],
+    "alpha": [
+      3,
+      1
+    ],
+    "visible": [
+      5,
+      true
+    ],
+    "colorTint": [
+      14,
+      16777215
+    ],
+    "static": [
+      5,
+      false
+    ],
+    "scripts": [
+      {
+        "clazz": "qc.NodeMask",
+        "data": "9d3bad28-43ec-4d06-b368-b66316bc95c6"
+      },
+      {
+        "clazz": "qc.DebugViewer",
+        "data": "ef77ed8a-ae97-4d7d-b390-3856d55baacc"
+      }
+    ],
+    "position": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      120,
+      30,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scaleX": [
+      3,
+      1
+    ],
+    "scaleY": [
+      3,
+      1
+    ],
+    "rotation": [
+      3,
+      0
+    ],
+    "interactive": [
+      5,
+      false
+    ],
+    "isFiltersThrough": [
+      5,
+      null
+    ],
+    "children": [],
+    "fontFamily": [
+      3,
+      0
+    ],
+    "alignH": [
+      3,
+      0
+    ],
+    "alignV": [
+      3,
+      0
+    ],
+    "font": [
+      32,
+      "Arial",
+      null
+    ],
+    "bold": [
+      5,
+      false
+    ],
+    "fontSize": [
+      3,
+      36
+    ],
+    "color": [
+      14,
+      4278255360
+    ],
+    "text": [
+      7,
+      "FPS: 28.3\nDraw Calls: 6\nTotal: 0.7 ms\nLogic: 0.3 ms\nRender: 0.3 ms\nPreUpdate: 0.0 ms\nUpdate: 0.3 ms\nPostUpdate: 0.0 ms\nTransformCalc: 0"
+    ],
+    "lineSpacing": [
+      3,
+      0
+    ],
+    "wrap": [
+      5,
+      false
+    ],
+    "enableGlow": [
+      5,
+      false
+    ],
+    "startColor": [
+      14,
+      4294901760
+    ],
+    "endColor": [
+      14,
+      4278190080
+    ],
+    "gradient": [
+      5,
+      false
+    ],
+    "stroke": [
+      14,
+      4278190080
+    ],
+    "strokeThickness": [
+      3,
+      0
+    ],
+    "glowColor": [
+      14,
+      4294901760
+    ],
+    "autoSize": [
+      5,
+      false
+    ],
+    "shadowColor": [
+      14,
+      4278190080
+    ],
+    "shadowBlur": [
+      3,
+      10
+    ],
+    "shadowOffsetX": [
+      3,
+      3
+    ],
+    "shadowOffsetY": [
+      3,
+      3
+    ],
+    "enableShadow": [
+      5,
+      false
+    ]
+  },
+  "__json": {
+    "9d3bad28-43ec-4d06-b368-b66316bc95c6": {
+      "class": "qc.NodeMask",
+      "data": {
+        "uuid": [
+          7,
+          "9d3bad28-43ec-4d06-b368-b66316bc95c6"
+        ],
+        "enable": false,
+        "checkInField": [
+          5,
+          false
+        ],
+        "minAnchor": [
+          24,
+          "qc.Point",
+          [
+            0,
+            0
+          ]
+        ],
+        "maxAnchor": [
+          24,
+          "qc.Point",
+          [
+            1,
+            1
+          ]
+        ],
+        "minRotation": [
+          3,
+          0
+        ],
+        "maxRotation": [
+          3,
+          6.283185307179586
+        ],
+        "clipType": [
+          3,
+          1
+        ],
+        "mode": [
+          3,
+          0
+        ]
+      }
+    },
+    "ef77ed8a-ae97-4d7d-b390-3856d55baacc": {
+      "class": "qc.DebugViewer",
+      "data": {
+        "uuid": [
+          7,
+          "ef77ed8a-ae97-4d7d-b390-3856d55baacc"
+        ],
+        "enable": true,
+        "debugOn": [
+          5,
+          true
+        ],
+        "duration": [
+          3,
+          0.1
+        ],
+        "detail": [
+          5,
+          false
+        ]
+      }
+    }
+  },
+  "dependences": {}
+}

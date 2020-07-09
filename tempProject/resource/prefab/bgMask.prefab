@@ -1,0 +1,104 @@
+{
+  "class": "qc.Graphics",
+  "data": {
+    "uuid": "b910144a-d01c-4b87-9687-b4db789a2a7b",
+    "_prefab": [
+      7,
+      "GKcYrnPkDXQt207"
+    ],
+    "__lock": [
+      5,
+      null
+    ],
+    "name": [
+      7,
+      "bgMask"
+    ],
+    "uniqueName": [
+      7,
+      ""
+    ],
+    "ignoreDestroy": [
+      5,
+      false
+    ],
+    "alpha": [
+      3,
+      0.5
+    ],
+    "visible": [
+      5,
+      true
+    ],
+    "colorTint": [
+      14,
+      16777215
+    ],
+    "static": [
+      5,
+      false
+    ],
+    "scripts": [
+      {
+        "clazz": "ps.BgMask",
+        "data": "aaf42f7d-ca12-4260-91f3-5988a0cc70b3"
+      }
+    ],
+    "position": [
+      0,
+      0,
+      309.2233565123953,
+      449.4039666148798,
+      309.2233565123953,
+      449.4039666148798,
+      1334,
+      1334,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scaleX": [
+      3,
+      0.6041666849838719
+    ],
+    "scaleY": [
+      3,
+      0.6041666849838719
+    ],
+    "rotation": [
+      3,
+      0
+    ],
+    "interactive": [
+      5,
+      false
+    ],
+    "isFiltersThrough": [
+      5,
+      null
+    ],
+    "children": []
+  },
+  "__json": {
+    "aaf42f7d-ca12-4260-91f3-5988a0cc70b3": {
+      "class": "ps.BgMask",
+      "data": {
+        "uuid": [
+          7,
+          "aaf42f7d-ca12-4260-91f3-5988a0cc70b3"
+        ],
+        "enable": true,
+        "color": [
+          14,
+          4278190080
+        ]
+      }
+    }
+  },
+  "dependences": {}
+}

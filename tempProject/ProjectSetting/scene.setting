@@ -1,0 +1,6 @@
+{
+  "scene": [
+    "resource/scene/gamePlay"
+  ],
+  "entryScene": "resource/scene/gamePlay"
+}

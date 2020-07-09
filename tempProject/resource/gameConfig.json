@@ -1,0 +1,104 @@
+{
+    "autoEndTime": 0,
+    "playAgain": 1,
+    "gameConfig": {
+        "sliderName": {
+            "type": "slider",
+            "value": 4,
+            "min": 0,
+            "max": 8,
+            "desc": "slider 提示信息"
+        },
+        "inputName": {
+            "type": "input:text",
+            "value": "value",
+            "desc": "input:text 提示信息"
+        },
+        "inputName_radio": {
+            "type": "radio",
+            "value": "value",
+            "options": [
+                "value"
+            ],
+            "desc": "radio 提示信息"
+        },
+        "switchName": {
+            "type": "switch",
+            "value": true,
+            "desc": "switch 提示信息"
+        },
+        "radioName": {
+            "type": "input:text",
+            "value": "a",
+            "desc": "input:text 提示信息"
+        },
+        "radioName_radio": {
+            "type": "radio",
+            "value": "a",
+            "options": [
+                "a"
+            ],
+            "desc": "radio 提示信息"
+        },
+        "checkboxName": {
+            "type": "array",
+            "subtype": "input:text",
+            "value": [
+                "a",
+                "b",
+                "c"
+            ],
+            "desc": "文本输入框数组 提示信息"
+        },
+        "checkboxName_checkbox": {
+            "type": "checkbox",
+            "value": [
+                "a",
+                "b",
+                "c"
+            ],
+            "options": [
+                "a",
+                "b",
+                "c"
+            ],
+            "desc": "checkbox 提示信息"
+        },
+        "arraySliderName": {
+            "type": "array",
+            "subtype": "slider",
+            "min": 1,
+            "max": 3,
+            "value": [
+                1,
+                2,
+                3
+            ],
+            "desc": "Slider数组 提示信息"
+        },
+        "arrayInputName": {
+            "type": "array",
+            "subtype": "input:text",
+            "value": [
+                "a",
+                "b",
+                "c"
+            ],
+            "desc": "文本输入框数组 提示信息"
+        },
+        "arrayInputName_checkbox": {
+            "type": "checkbox",
+            "value": [
+                "a",
+                "b",
+                "c"
+            ],
+            "options": [
+                "a",
+                "b",
+                "c"
+            ],
+            "desc": "checkbox 提示信息"
+        }
+    }
+}

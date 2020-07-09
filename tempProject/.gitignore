@@ -1,0 +1,18 @@
+*.map
+/.vscode/
+/node_modules/
+/Temp/
+
+/Build/*
+!/Build/*.bat
+
+/ProjectSetting/*
+!/ProjectSetting/scene.setting
+!/ProjectSetting/script.setting
+!/ProjectSetting/plugin.setting
+
+/Scripts/*
+!/Scripts/custom/
+!/Scripts/libs/
+
+# /Assets/meta/assetCountMap.js

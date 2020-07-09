@@ -1,0 +1,1 @@
+node %PLAYSMART_PATH%/Tools/pack.js
