@@ -1,8 +1,9 @@
+<div align=center>
+   <img width=35% src=https://user-images.githubusercontent.com/37395391/123893634-5be1af80-d98f-11eb-9d87-8a751c34585d.png>
+</div>
+
 # PSD2UI
 
-<div align=center>
-   <img width=50% src=https://user-images.githubusercontent.com/37395391/123893634-5be1af80-d98f-11eb-9d87-8a751c34585d.png>
-</div>
 ## TODO
 
 1. 组名为 xxx@merge 合并组内所有图层，导出单张图；
