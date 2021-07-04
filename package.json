@@ -1,24 +1,36 @@
 {
-    "name": "psdtoui",
-    "version": "0.0.1",
-    "description": "A tool for converting psd file to playsmart scene",
-    "main": "./PSDtoUI.js",
-    "keywords": [
-        "psdtoui",
-        "playsmart"
-    ],
-    "author": "mintegral",
-    "repository": {
-        "type": "git"
-    },
-    "license": "MIT",
-    "dependencies": {
-        "archiver": "^2.1.1",
-        "fs-extra": "^6.0.1",
-        "images": "^3.2.2",
-        "js-base64": "^2.5.2",
-        "path": "^0.12.7",
-        "psd": "^3.2.0",
-        "ts-node": "^8.10.2"
-    }
+  "name": "psd2ui",
+  "version": "2.0.2",
+  "description": "A tool for converting psd file to playsmart scene",
+  "main": "./PSD2UI.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node PSD2UI.js",
+    "test": "node --inspect-brk PSD2UI.js",
+    "trace": "node --trace_gc bin.js"
+  },
+  "bin": {
+    "psd2ui": "bin.js"
+  },
+  "keywords": [
+    "psdtoui",
+    "playsmart"
+  ],
+  "author": "mintegral",
+  "repository": {
+    "type": "git"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "archiver": "^2.1.1",
+    "canvas": "^2.6.1",
+    "commander": "^7.2.0",
+    "fs-extra": "^6.0.1",
+    "images": "^3.2.2",
+    "js-base64": "^2.5.2",
+    "path": "^0.12.7",
+    "pngjs": "^6.0.0",
+    "pretty-bytes": "^5.6.0",
+    "psd": "^3.2.0"
+  }
 }

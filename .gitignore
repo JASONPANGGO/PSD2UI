@@ -1,7 +1,18 @@
+*.map
 /.vscode/
 /node_modules/
-/output/
-/psd/
-/test/
-demo.js
-demo.ts
+/Temp/
+
+/Build/*
+!/Build/*.bat
+!/Build/readme.txt
+
+/Scripts/*
+!/Scripts/custom/
+!/Scripts/libs/
+
+/tempProject
+
+/output
+
+# /Assets/meta/assetCountMap.js

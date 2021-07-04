@@ -7,15 +7,21 @@
 const PSD = require("psd");
 const fs = require("fs-extra");
 const path = require("path");
-const crypto = require("crypto");
 const config = require("./config");
 const util = require("./util");
 const images = require("images");
 const {
 	PNG
 } = require("pngjs");
-var RootLayers;
-var targetPackage;
+const { compressImg, traceMemory, drawCanvas } = require("./util");
+const { resolvePSDfromDir, resolveStage, resolveGroup, resolveLayersType } = require('./playsmart')
+const { createCanvas, Image } = require('canvas');
+
+let RootLayers;
+let targetPackage;
+let isDirectory = false;
+
+
 
 /**
  * 把psd文件转换成json格式并拆分图片资源
@@ -27,84 +33,155 @@ var targetPackage;
  */
 exports.convert = function (psdFile, outputFileDir) {
 	return new Promise(function (resolve, reject) {
-		let option = 0;
-		let buildId = genBuildId();
+		let buildId = util.genBuildId();
 
 		// 获取资源放置路径
-		var resourceDirectory = path.join(outputFileDir, config.resource);
-		var textureDirectory = path.join(resourceDirectory, "game");
+		let resourceDirectory = path.join(outputFileDir, config.resource);
+		let textureDirectory = path.join(resourceDirectory, "game");
 
 		// 清空texture原有的资源
-		// fs.emptyDirSync(textureDirectory);
+		if (!config.isPlaysmart) fs.emptyDirSync(textureDirectory);
 
+		let tree
 		// 获取psd文件并解析
-		var psd = PSD.fromFile(psdFile);
-		psd.parse();
+		if (fs.statSync(psdFile).isDirectory()) {
+			isDirectory = true
+			let ret = resolvePSDfromDir(psdFile)
+			tree = ret.tree
+			RootLayers = ret.RootLayers
+		} else {
+			const psd = PSD.fromFile(psdFile);
+			psd.parse()
+			tree = psd.tree()
+			RootLayers = tree.export()
+		}
+
+		validatePsd(RootLayers)
 
 		// 创建资源包
 		targetPackage = new UIPackage(outputFileDir, buildId);
-		targetPackage.exportOption = option;
 
 		// 开始转换psd节点树
-		convertNodes(psd.tree());
+		convertNodes(tree);
 
+		console.log('需要保存的所有图片： ', targetPackage.sameNameTestHelper);
 
 		// 保存图片资源
-		Promise.all(targetPackage.resources.map(item => savePng(item))).then(() => {
+		// Promise.all(targetPackage.resources.map((item, index) => savePng(item, index))).then(() => {
+		// 	resolve(RootLayers);
+		// }).catch(err => {
+		// 	throw err
+		// })
+		Promise.all(targetPackage.resources).then(() => {
 			resolve(RootLayers);
+		}).catch(err => {
+			console.log(err);
 		})
-	});
+	}).catch(err => {
+		console.log(err);
+	})
 };
 
-function savePng(item) {
-	return new Promise((saveResolve, saveReject) => {
-		// 需要合并的图层pixelData数组
-		if (Array.isArray(item)) {
-			// item.forEach(child => {
-			// 	loadPixelData(child)
-			// })
-		} else if (item.type !== "image") saveReject()
+function validatePsd(rootLayers) {
+	const rootGroupNames = Object.values(rootLayers.children).map(layer => layer.name)
+	const VALIDATE_GROUPS = ['start', 'game', 'ending']
+	if (!rootGroupNames.every(name => VALIDATE_GROUPS.includes(name))) {
+		throw new Error(`psd文件的根组必须是${VALIDATE_GROUPS}！当前是${rootGroupNames.join(' ')}`)
+	}
+	return true
+}
+
+
+function savePng(item, index) {
+	return new Promise(async (saveResolve, saveReject) => {
+
+		traceMemory()
+
+		fs.ensureDirSync(path.join(targetPackage.basePath, config.resource, item.stage))
+
+		if (item.type !== "image") {
+			saveReject()
+			return
+		}
+
 		// 获取图片资源需要存储到的目标路径
 		const fileUrl = path.join(
 			targetPackage.basePath,
 			config.resource,
 			util.tranSrc(item)
-		);
+		).replace(/\\/g, '/')
+		const i = fileUrl.lastIndexOf('/')
+		if (i !== -1) fs.ensureDirSync(fileUrl.slice(0, i))
+
 		const pixelData = item.data.layer.image.pixelData;
-		loadPixelData(
-				pixelData,
-				item.data.width,
-				item.data.height,
-				item
-			)
-			.then((buffer) => {
-				// 图片资源特殊处理
-				if (item.suffix === "jpg") {
-					const img = images(buffer);
-					img.save(fileUrl, "jpg");
-				} else if (item.name.match(/cta/)) {
-					const ctaWidth = 620;
-					const ctaHeight = 250;
-					const img = images(buffer);
-					images(ctaWidth, ctaHeight)
-						.drawImage(
-							img,
-							(ctaWidth - img.width()) / 2,
-							(ctaHeight - img.height()) / 2
-						)
-						.save(fileUrl);
-				} else {
-					fs.writeFileSync(fileUrl, buffer);
-				}
+
+		if (item.size) {
+			// 序列帧
+			const buffer = await loadPixelData(pixelData, item.data.width, item.data.height, item)
+			let canvas = drawCanvas({
+				width: item.size.width,
+				height: item.size.height,
+				x: item.size.x,
+				y: item.size.y,
+				buffer
+			})
+			let readStream
+			if (item.suffix === 'jpg') {
+				readStream = canvas.createJPEGStream()
+			} else {
+				readStream = canvas.createPNGStream()
+			}
+			readStream.pipe(fs.createWriteStream(fileUrl)).on('close', () => {
+				saveResolve()
+				// item.data = null
+				// canvas = null
+			})
+		} else if (item.suffix === 'jpg') {
+			// jpg
+			const buffer = await loadPixelData(pixelData, item.data.width, item.data.height, item)
+			let img = images(buffer)
+			img.save(fileUrl, "jpg")
+
+			saveResolve()
+			// img = null
+			// item.data = null
+		} else if (item.name.match(/cta/)) {
+			// cta
+			const buffer = await loadPixelData(pixelData, item.data.width, item.data.height, item)
+			const ctaWidth = 620
+			const ctaHeight = 250
+			let canvas = drawCanvas({
+				width: ctaWidth,
+				height: ctaHeight,
+				buffer,
+				x: (ctaWidth - item.data.width) / 2,
+				y: (ctaHeight - item.data.height) / 2
+			})
+			let readStream
+			if (item.suffix === 'jpg') {
+				readStream = canvas.createJPEGStream()
+			} else {
+				readStream = canvas.createPNGStream()
+			}
+			readStream.pipe(fs.createWriteStream(fileUrl)).on('close', () => {
+				saveResolve()
+				// item.data = null
+				// canvas = null
+			})
+		} else {
+			console.log(fileUrl);
+			// 普通情况
+			item.data.saveAsPng(fileUrl).then(() => {
+				saveResolve()
+				// item.data = null
+			}).catch(() => {
 				saveResolve()
 			})
-			.catch(() => {
-				item.data.saveAsPng(fileUrl).then(() => {
-					saveResolve()
-					console.log(`${item.name}转换失败，已存储成png`);
-				})
-			});
+		}
 
+	}).catch(err => {
+		console.log(err);
+		// throw err
 	})
 }
 
@@ -124,6 +201,7 @@ function loadPixelData(pixelData, width, height, item) {
 		png.data = pixelData;
 		res(PNG.sync.write(png));
 	}).catch((err) => {
+		console.log(err);
 		rej();
 	});
 }
@@ -154,241 +232,124 @@ function UIPackage(basePath, buildId) {
  * @param {Object} tree psd.tree()
  */
 function convertNodes(tree) {
-	RootLayers = tree.export();
-	var cnt = tree.children().length;
-	for (var i = cnt - 1; i >= 0; i--) {
-		parseNode(tree.children()[i], RootLayers.children[i]);
+	for (let i = tree.children().length - 1; i >= 0; i--) {
+		parseNode(tree.children()[i], RootLayers.children[i], "game");
 	}
 }
 
 /**
  * 创建资源文件，主要是图片
- * @param {string} belongScene
- * @param {string} type
+ * @param {string} stage 环节 start, game, end
+ * @param {string} type 资源类型
  * @param {string} name 资源名
  * @param {string} suffix 后缀名
+ * @param {Object} size 自定义x渲染尺寸的对象
+ * @param {string} group 组合 group_xxx
  * @param {*} data
  */
-function createPackageItem(belongScene, type, name, suffix, data) {
-	var dataForHash;
-	if (type == "image")
-		//data should be a psd layer
-		dataForHash = Buffer.from(data.get("image").pixelData);
-	else dataForHash = data;
-	var hash = crypto.createHash("md5").update(dataForHash).digest("hex");
-	var item = targetPackage.sameDataTestHelper[hash];
-	if (!item) {
-		item = {};
-		item.type = type;
-		item.id = targetPackage.getNextItemId();
-
-		// var i = fileName.lastIndexOf('.');
-		// var basename = fileName.substr(0, i);
-		// var ext = fileName.substr(i);
-		// basename = basename.replace(/[\@\'\"\\\/\b\f\n\r\t\$\%\*\:\?\<\>\|]/g, '_');
-		// basename = basename.trim()
-
-		let basename = name.trim(); //去除前后空格
-		while (true) {
-			var j = targetPackage.sameNameTestHelper[basename];
-			if (j == undefined) {
-				targetPackage.sameNameTestHelper[basename] = 1;
-				break;
-			} else {
-				targetPackage.sameNameTestHelper[basename] = j + 1;
-				basename = basename + "_" + j;
-			}
-		}
-		// fileName = basename + ext;
-		const fileName = `${name}.${suffix}`;
-		item.name = fileName;
-		item.basename = basename;
-		item.suffix = suffix;
-		item.data = data;
-		item.belongScene = belongScene
-		targetPackage.resources.push(item);
-		targetPackage.sameDataTestHelper[hash] = item;
+function createPackageItem(stage, type, name, suffix, data, size, group) {
+	const uniqueName = path.join(stage || 'game', group || '', name)
+	if (targetPackage.sameNameTestHelper[uniqueName]) return
+	targetPackage.sameNameTestHelper[uniqueName] = true
+	const item = {
+		id: targetPackage.getNextItemId(),
+		name: `${name}.${suffix}`,
+		basename: util.formatStr(name),
+		type,
+		suffix,
+		data,
+		stage,
+		size,
+		group
 	}
 
-	return item;
+	targetPackage.resources.push(savePng(item));
+}
+
+
+
+/**
+ * 根据命名处理结点以添加特殊功能
+ * @param {string} name 
+ * @param {*} psdNode
+ * @param {*} layers 
+ */
+function resolveName(name, layers) {
+	const nameAnalyzer = require("./resolveName")
+	if (!isDirectory) nameAnalyzer.resolveCTA(name, layers)
+	if (!nameAnalyzer.checkResovable(name)) return false
+	layers.script = {}
+	// 组件只使用 “;|；” 分开。不用 “,|，” 是因为适配组件 ps.Layout 用 “,|，” 区分横竖屏
+	name.split("@")[1].split(/\s*(;|；)\s*/).forEach(string => {
+		// console.log(name, string)
+		nameAnalyzer.resolveAspectRatioFitter(string, layers)
+		if (!layers.hasAspectRatio) nameAnalyzer.resolveLayout(string, layers)
+		nameAnalyzer.resolveLanguages(string, layers)
+		nameAnalyzer.resolveSuffix(string, layers)
+		nameAnalyzer.resolveSize(string, layers)
+		nameAnalyzer.resolveXLZ(string, layers)
+	})
+	return true
 }
 
 /**
  * 遍历psd节点如果是图片就保存资源，以及特殊处理
- * @param {*} psdNode
- * @param {*} layers
- * @param {string} belongScene 所属场景start,game,end
- */
-function parseNode(psdNode, layers, belongScene) {
+ * @param {*} psdNode PSD图层结点
+ * @param {*} layers 图层树
+ * @param {string} stage 环节 start, game, end
+ * @param {string} group 组合 group_xxx
+*/
+function parseNode(psdNode, layers, stage, group) {
 	if (config.onlyVisible && !psdNode.layer.visible) return;
+	if (!layers) return
+	let nodeName = util.formatStr(layers.name) // psdNode.get("name");
 
-	var child;
-	var packageItem;
+	traceMemory()
 
-	const nodeName = psdNode.get("name");
-	let name = nodeName;
-	// 通过图层名称判断可以做特殊处理
-	if (name.match("@")) {
-		layers.script = {};
-		let temp = name.split("@");
-		let scripts = temp[1].split(",");
-		name = temp[0];
-		// name@p:topLeft,l:right
-		const DIR = ["top", "left", "right", "bottom"];
-		const DefDistance = 30;
-		// name@fixedWide,showAll
-		/**
-		 * Four modes to resize the node
-		 * @type {number}
-		 */
-		const AspectRatioFitter = {
-			NONE: 0,
-			WIDTH_CONTROLS_HEIGHT: 1,
-			HEIGHT_CONTROLS_WIDTH: 2,
-			FIT_IN_PARENT: 3,
-			ENVELOPE_PARENT: 4,
-		};
-		const ScaleMode = {
-			showall: AspectRatioFitter.FIT_IN_PARENT,
-			fixedwide: AspectRatioFitter.ENVELOPE_PARENT,
-		};
+	// 判断图层类型 -> layer,group,text
+	const layersType = resolveLayersType(psdNode, layers)
 
-		layers.script["Layout"] = {
-			ldef: "",
-			pdef: "",
-		};
-		scripts.forEach((string) => {
-			// Layout 适配组件
-			const hash = string.split(":");
-			if (hash.length >= 2) {
-				let key = hash[0].toString().toLowerCase();
-				let data = hash[1].toString().toLowerCase();
-				let layoutData = [];
-				if (key === "l") {
-					// landscape
-					key = "ldef";
-				} else if (key === "p") {
-					// portrait
-					key = "pdef";
-				} else {
-					throw new Error(
-						`图层：“${nodeName}”中，适配屏幕方向值：“${hash[0]}”有误！！！`
-					);
-				}
-				DIR.forEach((d) => {
-					if (data && data.match(d)) {
-						layoutData.push(`${d}:${DefDistance}`);
-						data = data.split(d).join("");
-					}
-				});
-				// 查找完如果还有字符串
-				if (data) {
-					throw new Error(
-						`图层：“${nodeName}”中，适配方向值：“${hash[1]}”中“${data}”写法有误！！！`
-					);
-				}
-				if (layoutData.length === 1) {
-					if (
-						layoutData[0] === `left:${DefDistance}` ||
-						layoutData[0] === `right:${DefDistance}`
-					) {
-						layoutData.push("centerY:0");
-					} else {
-						layoutData.push("centerX:0");
-					}
-				}
-				layers.script["Layout"][key] = layoutData.join(",");
-			} else {
-				// 组名为 xxx@merge 合并组内所有图层，导出单张图
-				if (psdNode.isGroup())
-					layers.isMerge = string.toLowerCase() === "merge";
+	// 判断名称 -> layers.script, layers.suffix, cta
+	const hasSpecialName = resolveName(nodeName, layers)
+	if (hasSpecialName) {
+		nodeName = nodeName.split("@")[0]
+		layers.name = nodeName
+	}
 
-				// 图片资源后缀
-				if (!psdNode.isEmpty())
-					layers.suffix =
-					string.toLowerCase() === "jpg" ? "jpg" : "png";
+	// 根据不同结点类型对layers做不同处理
+	switch (layersType) {
+		case "group":
+			stage = resolveStage(nodeName, stage)
+			group = resolveGroup(nodeName, group)
 
-				// 宽高比适配器
-				if (Object.keys(ScaleMode).includes(string.toLowerCase())) {
-					layers.script["AspectRatioFitter"] = ScaleMode[string.toLowerCase()];
-				}
+			const psdChildren = psdNode.children();
+			for (let i = layers.children.length - 1; i >= 0; i--) {
+				parseNode(psdChildren[i], layers.children[i], stage, group);
 			}
-		});
-	}
+			break;
+		case "text":
 
-	// 如果是组就判断组件类型
-	if (psdNode.isGroup()) {
-		layers.isMerge = !!layers.isMerge;
-		if (['start', 'game', 'ending'].includes(name)) {
-			belongScene = name
-		}
-		// if (!layers.isMerge) {
-		if (layers.isMerge) {
-			const mergeDataArray = []
-			psdNode.children().forEach(child => {
-				if (!child.isEmpty()) {
-					mergeDataArray.push(child.get("image").pixelData)
-				}
-			})
-			targetPackage.resources.push(mergeDataArray)
-		} else {
-			const length = psdNode.children().length;
-			for (let i = length - 1; i >= 0; i--)
-				parseNode(psdNode.children()[i], layers.children[i], belongScene);
-		}
-		// } else {
-		//     if (!layers.suffix) layers.suffix = 'png'
-		//     packageItem = createPackageItem('image', name, layers.suffix, psdNode)
-		//     layers.src = packageItem.name
-		// }
-	} else {
-		// 不是组的话判断是图片还是文本
-		const typeTool = psdNode.get("typeTool");
-		if (typeTool) {
-			layers.type = "text";
-			// console.log(typeTool)
-		} else if (!psdNode.isEmpty()) {
-			if (!layers.suffix) layers.suffix = "png";
-			packageItem = createPackageItem(
-				belongScene,
+			break;
+		case "layer":
+			if (!layers.suffix) layers.suffix = "png"
+			createPackageItem(
+				stage,
 				"image",
-				name,
+				nodeName,
 				layers.suffix,
-				psdNode
-			);
-
+				psdNode,
+				layers.size,
+				group
+			)
 			layers.src = util.tranSrc({
-				belongScene: belongScene,
-				name: layers.name + `.${layers.suffix}`
-			});
-			// console.log(psdNode);
-		}
+				stage: stage,
+				group: group,
+				name: nodeName + `.${layers.suffix}`
+			})
+			break;
+
+		default:
+			break;
 	}
 
-	return child;
-}
-
-//==================== util =====================
-
-function genBuildId() {
-	var magicNumber = Math.floor(Math.random() * 36)
-		.toString(36)
-		.substr(0, 1);
-	var s1 = "0000" + Math.floor(Math.random() * 1679616).toString(36);
-	var s2 = "000" + Math.floor(Math.random() * 46656).toString(36);
-	var count = 0;
-	for (var i = 0; i < 4; i++) {
-		var c = Math.floor(Math.random() * 26);
-		count += Math.pow(26, i) * (c + 10);
-	}
-	count +=
-		Math.floor(Math.random() * 1000000) +
-		Math.floor(Math.random() * 222640);
-
-	return (
-		magicNumber +
-		s1.substr(s1.length - 4) +
-		s2.substr(s2.length - 3) +
-		count.toString(36)
-	);
 }
