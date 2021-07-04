@@ -1,8 +1,9 @@
-# psd2ui 2.0 🚀
 
 <div align=center>
     <img width=35% src=https://user-images.githubusercontent.com/37395391/123893634-5be1af80-d98f-11eb-9d87-8a751c34585d.png />
     </div>
+
+# psd2ui 2.0 🚀
 
 - ⚙️ 使用 commander.js 规范参数传递
 - 🚜 暴露 psd2ui 方法
